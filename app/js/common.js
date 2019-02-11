@@ -1,88 +1,71 @@
+$(function () {
 
 // slick slider
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         $(".slideshow").slick({
             dots: false,
             arrows: false
         });
-        $(".menu-slider a").click(function(e){
+        $(".menu-slider a").click(function (e) {
             e.preventDefault();
             slideIndex = $(this).index();
-            $( '.slideshow' ).slickGoTo( parseInt(slideIndex) );
+            $('.slideshow').slickGoTo(parseInt(slideIndex));
         });
     });
-
 
 // counter
 
-function catalogItemCounter(field){
-    var fieldCount = function(el) {
-        var
-            // Мин. значение
-            min = el.data('min') || false,
+    function catalogItemCounter(field) {
+        var fieldCount = function (el) {
+            var min = el.data('min') || false,
+                max = el.data('max') || false,
+                dec = el.next('.dec'),
+                inc = el.prev('.inc');
 
-            // Макс. значение
-            max = el.data('max') || false,
+            function init(el) {
+                if (!el.attr('disabled')) {
+                    dec.on('click', decrement);
+                    inc.on('click', increment);
+                }
 
-            // Кнопка уменьшения кол-ва
-            dec = el.next('.dec'),
+                function decrement() {
+                    var value = parseInt(el[0].value);
+                    value--;
 
-            // Кнопка увеличения кол-ва
-            inc = el.prev('.inc');
+                    if (!min || value >= min) {
+                        el[0].value = value;
+                    }
+                }
 
-        function init(el) {
-            if(!el.attr('disabled')){
-                dec.on('click', decrement);
-                inc.on('click', increment);
+                function increment() {
+                    var value = parseInt(el[0].value);
+                    value++;
+                    if (!max || value <= max) {
+                        el[0].value = value++;
+                    }
+                }
             }
 
-            // Уменьшим значение
-            function decrement() {
-                var value = parseInt(el[0].value);
-                value--;
+            el.each(function () {
+                init($(this));
+            });
+        };
 
-                if(!min || value >= min) {
-                    el[0].value = value;
-                }
-            };
-
-            // Увеличим значение
-            function increment() {
-                var value = parseInt(el[0].value);
-
-                value++;
-
-                if(!max || value <= max) {
-                    el[0].value = value++;
-                }
-            };
-
-        }
-
-        el.each(function() {
-            init($(this));
+        $(field).each(function () {
+            fieldCount($(this));
         });
-    };
+    }
 
-    $(field).each(function(){
-        fieldCount($(this));
-    });
-}
+    catalogItemCounter('.fieldCount');
 
-catalogItemCounter('.fieldCount');
+// menuToggle
 
-
-
-$(function(){
-
-    $('.menuToggle').on('click', function() {
-        $('.menu').slideToggle(300, function(){
-            if( $(this).css('display') === "none"){
+    $('.menuToggle').on('click', function () {
+        $('.menu').slideToggle(300, function () {
+            if ($(this).css('display') === "none") {
                 $(this).removeAttr('style');
             }
         });
-
     });
-
 });
